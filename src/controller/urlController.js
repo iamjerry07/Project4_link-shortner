@@ -26,13 +26,19 @@ const postUrl= async function (req,res){
 
     let obj= {longUrl:userData,shortUrl:short,urlCode:shortID}
 
-    res.send({data:obj})
+    res.status(201).send({status:true,data:obj})
 } 
 catch (error) {
     res.status(500).send({ status: false, message: error.message })
-
- 
 }}
 
 
+const getUrl= async function(req,res){
+    let data= req.params
+    let gotUrl= await urlModel.findOne({urlCode:data})
+    res.status(201).send({longUrl:gotUrl})
+}
+
+
 module.exports.postUrl=postUrl
+module.exports.getUrl=getUrl

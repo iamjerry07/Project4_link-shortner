@@ -12,7 +12,7 @@ type:String,
 required:true,
 trim:true
 },
-  shortUrl: {
+  shortUrl: {type:String,
       required:true,
       unique:true,
       trim:true

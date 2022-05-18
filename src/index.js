@@ -5,13 +5,14 @@ const app = express();
 const mongoose = require('mongoose');
 
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-mongoose.connect("mongodb+srv://anurup123:9051011794@cluster0.6ajxy.mongodb.net/anurup123")
+mongoose.connect("mongodb+srv://rohanDb:iamjerry@cluster0.etldx.mongodb.net/url?retryWrites=true&w=majority")
     .then(() => console.log('MongoDb is connected'))
     .catch(err => console.log(err));
 
 app.use('/', route);
 
-app.listen(process.env.PORT || 3000, function () {
-    console.log('Express app running on port ' + (process.env.PORT || 3000))
+app.listen(process.env.PORT || 3000, (err) => {
+    console.log("Connected to port 3000")
 });

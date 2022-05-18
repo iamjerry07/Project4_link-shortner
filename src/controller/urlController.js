@@ -5,14 +5,14 @@ const shortid = require('shortid');
 const postUrl= async function (req,res){
 
     try{
-    let userData= req.body.url
+    let userData= req.body.longurl
     let user= req.body
 
     if(!(Object.keys(user).length || user==null || user== undefined)){
-        res.status(400).send( {status: false, message: "Type a key==> (link) and value ==> (your URL) to shorten"})
+      return  res.status(400).send( {status: false, message: "Type a key==> (longUrl) and value ==> (your URL) to shorten"})
     }
     if(!userData){
-        res.status(400).send( {status: false, message: "Give any url to shorten"})
+       return res.status(400).send( {status: false, message: "Give any url to shorten"})
     }
     // if(!(/^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/.test(userData))){
     //     return res.status(400).send( {status: false, message: "Give a valid url"})
@@ -26,17 +26,24 @@ const postUrl= async function (req,res){
 
     let obj= {longUrl:userData,shortUrl:short,urlCode:shortID}
 
-    res.status(201).send({status:true,data:obj})
+    let createdUrl= await urlModel.create(obj)
+   return res.status(201).send({status:true,data:createdUrl})
 } 
 catch (error) {
-    res.status(500).send({ status: false, message: error.message })
+   return res.status(500).send({ status: false, message: error.message })
 }}
 
 
 const getUrl= async function(req,res){
-    let data= req.params
-    let gotUrl= await urlModel.findOne({urlCode:data})
-    res.status(201).send({longUrl:gotUrl})
+    let data= req.params.urlCode
+    if(!data){
+        return res.status(400).send( {status: false, message: "Give shortUrl in params"})
+    }
+    let gotUrl= await urlModel.findOne({urlCode:data}).select({longUrl:1,_id:0})
+    if(!gotUrl){
+        res.status(400).send( {status: false, message: "longUrl is not present for this shortID"})
+    }
+   return res.status(201).send(gotUrl)
 }
 
 
